@@ -1,0 +1,60 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a [routerLink]=" [ '/distributor', 'home' ] ">Distributor</a></li>
+    <li class="breadcrumb-item active" aria-current="page">
+      New Order
+      <i class="fa fa-circle-o-notch  fa-spin" *ngIf="showOrderSpinner"></i>
+    </li>
+  </ol>
+</nav>
+
+<form [formGroup]="newOrderForm">
+  <button class="btn btn-primary mr-2" (click)="onBtnAddProductClick()">
+    <i class="fa fa-plus-circle"></i> Add Product
+  </button>
+
+
+  <button type="submit" class="btn btn-success float-right" [routerLink]=" [ '/distributor', 'home' ] " [routerLinkActive]="['active']" (click)="onAddOrderClick($event)" [disabled]="newOrderDisabled">
+    <span *ngIf="!newOrderDisabled"><i class="fa fa-save"></i> Place Order</span>
+    <span *ngIf="newOrderDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+  </button>
+
+  <table class="table mt-2">
+    <thead>
+      <tr class="table-secondary">
+        <th>#</th>
+
+        <th>Product Name</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+        <th class="text-secondary">Actions</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let orderDetail of newOrderForm.get('orderDetails').controls; let index = index" formArrayName="orderDetails">
+        <td>{{index + 1}}</td>
+        <td [formGroupName]="index">
+          <select class="form-control" [ngClass]="{ 'is-invalid': orderDetail.get('productID').invalid && (orderDetail.get('productID').dirty || orderDetail.get('productID').touched || newOrderForm['submitted']) }" formControlName="productID" (change)="onProductDropDownChange(index)">
+            <option value="">Please Select</option>
+            <option *ngFor="let product of products" [value]="product.productID">
+              {{product.productName}}
+            </option>
+          </select>
+        </td>
+
+        <td [formGroupName]="index">{{orderDetail.get('unitPrice').value}}</td>
+        <td [formGroupName]="index">
+          <input type="number" placeholder="Quantity" class="form-control" id="quantity" formControlName="quantity" min="0" max="1000000" (change)="onQuantityChange(index)" />
+        </td>
+        <td [formGroupName]="index">{{orderDetail.get('totalAmount').value}}</td>
+        <td>
+          <div class="btn-group">
+            <button class="btn btn-sm btn-danger" (click)="onProductDeleteClick(index)">Delete</button>
+          </div>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</form>

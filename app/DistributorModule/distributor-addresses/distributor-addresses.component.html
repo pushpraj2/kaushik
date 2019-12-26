@@ -1,0 +1,335 @@
+<div class="row">
+  <div class="col-md-3 col-lg-2 ml-0 pl-0 pt-0 pr-0 border-right left-menu">
+    <div class="p-2">
+      <h5>
+        distributorAddresses <span class="badge badge-secondary float-right" *ngIf="distributorAddresses.length > 0">{{distributorAddresses.length}}</span>
+      </h5>
+    </div>
+    <div class="list-group mb-5">
+      <a class="list-group-item list-group-item-action list-group-item-primary" data-toggle="modal" href="#newDistributorAddressModal" (click)="onCreateDistributorAddressClick()">Create Distributor Address</a>
+    </div>
+    <div class="p-2 border-top"><h5>View</h5></div>
+    <div class="px-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewAddressLine1" [(ngModel)]="viewDistributorAddressesCheckBoxes.addressLine1">
+        <label class="form-check-label" for="viewAddressLine1">
+          Address Line 1
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewAddressLine2" [(ngModel)]="viewDistributorAddressesCheckBoxes.addressLine2">
+        <label class="form-check-label" for="viewAddressLine2">
+          Address Line 2
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewCity" [(ngModel)]="viewDistributorAddressesCheckBoxes.city">
+        <label class="form-check-label" for="viewCity">
+          City
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewState" [(ngModel)]="viewDistributorAddressesCheckBoxes.state">
+        <label class="form-check-label" for="viewState">
+          State
+        </label>
+
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewPincode" [(ngModel)]="viewDistributorAddressesCheckBoxes.pincode">
+        <label class="form-check-label" for="viewPincode">
+          Pincode
+        </label>
+      </div>
+
+
+
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewCreatedOn" [(ngModel)]="viewDistributorAddressesCheckBoxes.createdOn">
+        <label class="form-check-label" for="viewCreatedOn">
+          Created On
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewLastModifiedOn" [(ngModel)]="viewDistributorAddressesCheckBoxes.lastModifiedOn">
+        <label class="form-check-label" for="viewLastModifiedOn">
+          Last Modified On
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1" (click)="onViewSelectAllClick()">Select All</button>
+        <button class="btn btn-secondary btn-sm" (click)="onViewDeselectAllClick()">Deselect All</button>
+      </div>
+    </div>
+
+    <div class="p-2 border-top mt-4"><h5>Sort by</h5></div>
+    <div class="px-2">
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="sortBy">
+          <option value="addressLine1">Address Line1</option>
+          <option value="addressLine2">Address Line2</option>
+          <option value="city">City</option>
+          <option value="state">State</option>
+          <option value="pincode">Pincode</option>
+
+          <option value="creationDateTime">Created On</option>
+          <option value="lastModifiedDateTime">Last Modified On</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortAscending" value="ASC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortAscending">
+          Ascending
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortDescending" value="DESC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortDescending">
+          Descending
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1 px-3" (click)="onBtnSortClick()">Sort</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 col-lg-10">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          DistributorAddress
+          <i class="fa fa-circle-o-notch  fa-spin" *ngIf="showDistributorAddressesSpinner"></i>
+        </li>
+      </ol>
+    </nav>
+    <!--<h4>DistributorAddresses </h4>-->
+    <!--<button class="btn btn-primary" data-toggle="modal" data-target="#newDistributorModal" (click)="onCreateDistributorClick()">Create Distributor</button>-->
+    <table class="table mt-2">
+      <thead>
+        <tr class="table-secondary">
+          <th *ngIf="viewDistributorAddressesCheckBoxes.addressLine1">Address Line 1</th>
+          <th *ngIf="viewDistributorAddressesCheckBoxes.addressLine2">Address Line 2</th>
+          <th *ngIf="viewDistributorAddressesCheckBoxes.city">City</th>
+          <th *ngIf="viewDistributorAddressesCheckBoxes.state">State</th>
+          <th *ngIf="viewDistributorAddressesCheckBoxes.pincode">Pincode</th>
+          <th *ngIf="viewDistributorAddressesCheckBoxes.createdOn">Created on</th>
+          <th *ngIf="viewDistributorAddressesCheckBoxes.lastModifiedOn">Last Modified on</th>
+          <th class="text-secondary">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let distributorAddress of distributorAddresses; let index = index">
+          <td style="font-size:110%" *ngIf="viewDistributorAddressesCheckBoxes.addressLine1">{{distributorAddress.addressLine1}}</td>
+          <td *ngIf="viewDistributorAddressesCheckBoxes.addressLine2">{{distributorAddress.addressLine2}}</td>
+          <td *ngIf="viewDistributorAddressesCheckBoxes.city">{{distributorAddress.city}}</td>
+          <td *ngIf="viewDistributorAddressesCheckBoxes.state">{{distributorAddress.state}}</td>
+          <td *ngIf="viewDistributorAddressesCheckBoxes.pincode">{{distributorAddress.pincode}}</td>
+          <td *ngIf="viewDistributorAddressesCheckBoxes.createdOn">{{distributorAddress.creationDateTime}}</td>
+          <td *ngIf="viewDistributorAddressesCheckBoxes.lastModifiedOn">{{distributorAddress.lastModifiedDateTime}}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-secondary" data-toggle="modal" data-target="#editDistributorAddressModal" (click)="onEditDistributorAddressClick(index)">Edit</button>
+              <button class="btn btn-danger" data-toggle="modal" data-target="#deleteDistributorAddressModal" (click)="onDeleteDistributorAddressClick(index)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- New Distributor Address Modal -->
+<form [formGroup]="newDistributorAddressForm">
+  <div class="modal fade" id="newDistributorAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Create Distributor</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+
+          <div class="form-group form-row">
+            <label for="addressLine1" class="col-form-label col-md-4">Address Line1 : </label>
+            <div class="col-md-8">
+              <input type="text" placeholder="address Line 1 " class="form-control" id="newaddressLine1" formControlName="addressLine1" [ngClass]="getFormControlCssClass(newDistributorAddressForm.get('addressLine1'), newDistributorAddressForm)" />
+              <small class="form-text text-muted">address line 1 of distributor | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine1', 'required', newDistributorAddressForm)">{{getFormControlErrorMessage('addressLine1', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine1', 'minlength', newDistributorAddressForm)">{{getFormControlErrorMessage('addressLine1', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine1', 'maxlength', newDistributorAddressForm)">{{getFormControlErrorMessage('addressLine1', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="addressLine2" class="col-form-label col-md-4">Address Line2 : </label>
+            <div class="col-md-8">
+              <input type="text" placeholder="address Line 2" class="form-control" id="newaddressLine2" formControlName="addressLine2" [ngClass]="getFormControlCssClass(newDistributorAddressForm.get('addressLine2'), newDistributorAddressForm)" />
+              <small class="form-text text-muted">address line 2 the distributor | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine2', 'required', newDistributorAddressForm)">{{getFormControlErrorMessage('addressLine2', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine2', 'minlength', newDistributorAddressForm)">{{getFormControlErrorMessage('addressLine2', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine2', 'maxlength', newDistributorAddressForm)">{{getFormControlErrorMessage('addressLine2', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="city" class="col-form-label col-md-4">City : </label>
+            <div class="col-md-8">
+              <input type="text" placeholder="city" class="form-control" id="newcity" formControlName="city" [ngClass]="getFormControlCssClass(newDistributorAddressForm.get('city'), newDistributorAddressForm)" />
+              <small class="form-text text-muted">City in which distributor lives | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('city', 'required', newDistributorAddressForm)">{{getFormControlErrorMessage('city', 'required')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="state" class="col-form-label col-md-4">State:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="State" class="form-control" id="newstate" formControlName="state" [ngClass]="getFormControlCssClass(newDistributorAddressForm.get('state'), newDistributorAddressForm)" />
+              <small class="form-text text-muted">state in which distributor lives | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('state', 'required', newDistributorAddressForm)">{{getFormControlErrorMessage('state', 'required')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="pincode" class="col-form-label col-md-4">Pincode:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Pincode" class="form-control" id="newpincode" formControlName="pincode" [ngClass]="getFormControlCssClass(newDistributorAddressForm.get('pincode'), newDistributorAddressForm)" />
+              <small class="form-text text-muted">pincode of the distributor address| Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('pincode', 'required', newDistributorAddressForm)">{{getFormControlErrorMessage('pincode', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('pincode', 'pattern', editDistributorAddressForm)">{{getFormControlErrorMessage('pincode', 'pattern')}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnAddDistributorAddressCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onAddDistributorAddressClick($event)" [disabled]="newDistributorDisabled">
+            <span *ngIf="!newDistributorAddressDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="newDistributorAddressDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Edit Distributor Address Modal -->
+<form [formGroup]="editDistributorAddressForm">
+  <div class="modal fade" id="editDistributorAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Update Distributor Address</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="addressLine1" class="col-form-label col-md-4">Address Line1:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Address Line 1" class="form-control" id="addressLine1" formControlName="addressLine1" [ngClass]="getFormControlCssClass(editDistributorAddressForm.get('addressLine1'), editDistributorAddressForm)" />
+              <small class="form-text text-muted">Address Line 1 of the distributor | Can't be duplicate.</small>
+
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine1', 'required', editDistributorAddressForm)">{{getFormControlErrorMessage('addressLine1', 'required')}}</span>
+
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine1', 'minlength', editDistributorAddressForm)">{{getFormControlErrorMessage('addressLine1', 'minlength')}}</span>
+
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine1', 'maxlength', editDistributorAddressForm)">{{getFormControlErrorMessage('addressLine1', 'maxlength')}}</span>
+            </div>
+          </div>
+
+          <div class="form-group form-row">
+            <label for="addressLine2" class="col-form-label col-md-4">Address Line2:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="AddressLine2" class="form-control" id="addressLine2" formControlName="addressLine2" [ngClass]="getFormControlCssClass(editDistributorAddressForm.get('addressLine2'), editDistributorAddressForm)" />
+              <small class="form-text text-muted">addressLine2 Of the distributor | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine2', 'required', editDistributorAddressForm)">{{getFormControlErrorMessage('addressLine2', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine2', 'minlength', editDistributorAddressForm)">{{getFormControlErrorMessage('addressLine2', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('addressLine2', 'maxlength', editDistributorAddressForm)">{{getFormControlErrorMessage('addressLine2', 'maxlength')}}</span>
+            </div>
+          </div>
+
+
+
+          <div class="form-group form-row">
+            <label for="city" class="col-form-label col-md-4">City:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="City" class="form-control" id="city" formControlName="city" [ngClass]="getFormControlCssClass(editDistributorAddressForm.get('city'), editDistributorAddressForm)" />
+              <small class="form-text text-muted">city of the distributor | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('city', 'required', editDistributorAddressForm)">{{getFormControlErrorMessage('city', 'required')}}</span>
+
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="state" class="col-form-label col-md-4">state:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="State" class="form-control" id="state" formControlName="state" [ngClass]="getFormControlCssClass(editDistributorAddressForm.get('state'), editDistributorAddressForm)" />
+              <small class="form-text text-muted">state of the distributor | Can't be duplicate.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('state', 'required', editDistributorAddressForm)">{{getFormControlErrorMessage('state', 'required')}}</span>
+
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="pincode" class="col-form-label col-md-4">pincode:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Pincode" class="form-control" id="pincode" formControlName="pincode" [ngClass]="getFormControlCssClass(editDistributorAddressForm.get('pincode'), editDistributorAddressForm)" />
+              <small class="form-text text-muted">pincode of the distributor.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('pincode', 'required', editDistributorAddressForm)">{{getFormControlErrorMessage('pincode', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('pincode', 'pincode', editDistributorAddressForm)">{{getFormControlErrorMessage('pincode', 'pattern')}}</span>
+            </div>
+          </div>
+        </div>
+
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnUpdateDistributorAddressCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onUpdateDistributorAddressClick($event)" [disabled]="editDistributorAddressDisabled">
+            <span *ngIf="!editDistributorAddressDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="editDistributorAddressDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<!-- Delete DistributorAddress Modal -->
+<form [formGroup]="deleteDistributorAddressForm">
+  <div class="modal fade" id="deleteDistributorAddressModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Delete Distributor Address</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 class="mb-4">Are you sure to delete this DistributorAddress?</h5>
+          <div class="form-group form-row">
+            <label for="addressLine1" class="col-form-label col-md-4">Address Line 1:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Address Line 1" readonly="readonly" class="form-control-plaintext" id="addressLine1" formControlName="addressLine1" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDeleteDistributorAddressCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-danger" (click)="onDeleteDistributorAddressConfirmClick($event)" [disabled]="deleteDistributorAddressDisabled">
+            <span *ngIf="!deleteDistributorAddressDisabled"><i class="fa fa-save"></i> Delete</span>
+            <span *ngIf="deleteDistributorAddressDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Deleting</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

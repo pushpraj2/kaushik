@@ -1,0 +1,236 @@
+<div class="row">
+  <div class="col-md-3 col-lg-2 ml-0 pl-0 pt-0 pr-0 border-right left-menu">
+    <div class="p-2">
+      <h5>
+        System Users <span class="badge badge-secondary float-right" *ngIf="systemusers.length > 0">{{systemusers.length}}</span>
+      </h5>
+    </div>
+    <div class="list-group mb-5">
+      <a class="list-group-item list-group-item-action list-group-item-primary" data-toggle="modal" href="#newSystemUserModal" (click)="onCreateSystemUserClick()">Create System User</a>
+    </div>
+    <div class="p-2 border-top"><h5>View</h5></div>
+    <div class="px-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewSystemUserName" [(ngModel)]="viewSystemUserCheckBoxes.systemUserName">
+        <label class="form-check-label" for="viewSystemUserName">
+          System User Name
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewSystemUserEmail" [(ngModel)]="viewSystemUserCheckBoxes.systemUserEmail">
+        <label class="form-check-label" for="viewSystemUserEmail">
+          Email
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewCreatedOn" [(ngModel)]="viewSystemUserCheckBoxes.createdOn">
+        <label class="form-check-label" for="viewCreatedOn">
+          Created On
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewLastModifiedOn" [(ngModel)]="viewSystemUserCheckBoxes.lastModifiedOn">
+        <label class="form-check-label" for="viewLastModifiedOn">
+          Last Modified On
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1" (click)="onViewSelectAllClick()">Select All</button>
+        <button class="btn btn-secondary btn-sm" (click)="onViewDeselectAllClick()">Deselect All</button>
+      </div>
+    </div>
+
+    <div class="p-2 border-top mt-4"><h5>Sort by</h5></div>
+    <div class="px-2">
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="sortBy">
+          <option value="systemUserName">System User Name</option>
+          <option value="systemUserEmail">Email</option>
+          <option value="creationDateTime">Created On</option>
+          <option value="lastModifiedDateTime">Last Modified On</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortAscending" value="ASC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortAscending">
+          Ascending
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortDescending" value="DESC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortDescending">
+          Descending
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1 px-3" (click)="onBtnSortClick()">Sort</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 col-lg-10">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Admin</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          System Users
+          <i class="fa fa-circle-o-notch  fa-spin" *ngIf="showSystemUsersSpinner"></i>
+        </li>
+      </ol>
+    </nav>
+
+    <table class="table mt-2">
+      <thead>
+        <tr class="table-secondary">
+          <th *ngIf="viewSystemUserCheckBoxes.systemUserName">System User Name</th>
+          <th *ngIf="viewSystemUserCheckBoxes.systemUserEmail">Email</th>
+          <th *ngIf="viewSystemUserCheckBoxes.createdOn">Created on</th>
+          <th *ngIf="viewSystemUserCheckBoxes.lastModifiedOn">Last Modified on</th>
+          <th class="text-secondary">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let systemuser of systemusers; let index = index">
+          <td style="font-size:110%" *ngIf="viewSystemUserCheckBoxes.systemUserName">{{systemuser.systemUserName}}</td>
+          <td *ngIf="viewSystemUserCheckBoxes.systemUserEmail">{{systemuser.systemUserEmail}}</td>
+          <td *ngIf="viewSystemUserCheckBoxes.createdOn">{{systemuser.creationDateTime}}</td>
+          <td *ngIf="viewSystemUserCheckBoxes.lastModifiedOn">{{systemuser.lastModifiedDateTime}}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-secondary" data-toggle="modal" data-target="#editSystemUserModal" (click)="onEditSystemUserClick(index)">Edit</button>
+              <button class="btn btn-danger" data-toggle="modal" data-target="#deleteSystemUserModal" (click)="onDeleteSystemUserClick(index)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- New System User Modal -->
+<form [formGroup]="newSystemUserForm">
+  <div class="modal fade" id="newSystemUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Create System User</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="systemUserName" class="col-form-label col-md-4">System User Name: *</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="System User Name" class="form-control" id="systemUserName" formControlName="systemUserName" [ngClass]="getFormControlCssClass(newSystemUserForm.get('systemUserName'), newSystemUserForm)" />
+              <small class="form-text text-muted">Name of the system user.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserName', 'required', newSystemUserForm)">{{getFormControlErrorMessage('systemUserName', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserName', 'minlength', newSystemUserForm)">{{getFormControlErrorMessage('systemUserName', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserName', 'maxlength', newSystemUserForm)">{{getFormControlErrorMessage('systemUserName', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="systemUserEmail" class="col-form-label col-md-4">System User Email: *</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="System User Email" class="form-control" id="systemUserEmail" formControlName="systemUserEmail" [ngClass]="getFormControlCssClass(newSystemUserForm.get('systemUserEmail'), newSystemUserForm)" />
+              <small class="form-text text-muted">Email of the system user.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserEmail', 'required', newSystemUserForm)">{{getFormControlErrorMessage('systemUserEmail', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserEmail', 'email', newSystemUserForm)">{{getFormControlErrorMessage('systemUserEmail', 'email')}}</span>
+            </div>
+          </div>
+         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnAddSystemUserCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onAddSystemUserClick($event)" [disabled]="newSystemUserDisabled">
+            <span *ngIf="!newSystemUserDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="newSystemUserDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Edit System User Modal -->
+<form [formGroup]="editSystemUserForm">
+  <div class="modal fade" id="editSystemUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Update System User</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="systemUserName" class="col-form-label col-md-4">System User Name:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="System User Name" class="form-control" id="systemUserName" formControlName="systemUserName" [ngClass]="getFormControlCssClass(editSystemUserForm.get('systemUserName'), editSystemUserForm)" />
+              <small class="form-text text-muted">Name of the system user.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserName', 'required', editSystemUserForm)">{{getFormControlErrorMessage('systemUserName', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserName', 'minlength', editSystemUserForm)">{{getFormControlErrorMessage('systemUserName', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserName', 'maxlength', editSystemUserForm)">{{getFormControlErrorMessage('systemUserName', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="systemUserEmail" class="col-form-label col-md-4">System User Email:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="System User Email" class="form-control" id="systemUserEmail" formControlName="systemUserEmail" [ngClass]="getFormControlCssClass(editSystemUserForm.get('systemUserEmail'), editSystemUserForm)" />
+              <small class="form-text text-muted">Email of the system user.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserEmail', 'required', editSystemUserForm)">{{getFormControlErrorMessage('systemUserEmail', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('systemUserEmail', 'email', editSystemUserForm)">{{getFormControlErrorMessage('systemUserEmail', 'email')}}</span>
+            </div>
+          </div>          
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnUpdateSystemUserCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onUpdateSystemUserClick($event)" [disabled]="editSystemUserDisabled">
+            <span *ngIf="!editSystemUserDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="editSystemUserDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<!-- Delete System User Modal -->
+<form [formGroup]="deleteSystemUserForm">
+  <div class="modal fade" id="deleteSystemUserModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Delete System User</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 class="mb-4">Are you sure to delete this System User?</h5>
+          <div class="form-group form-row">
+            <label for="systemUserName" class="col-form-label col-md-4">System User Name:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="System User Name" readonly="readonly" class="form-control-plaintext" id="systemUserName" formControlName="systemUserName" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDeleteSystemUserCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-danger" (click)="onDeleteSystemUserConfirmClick($event)" [disabled]="deleteSystemUserDisabled">
+            <span *ngIf="!deleteSystemUserDisabled"><i class="fa fa-save"></i> Delete</span>
+            <span *ngIf="deleteSystemUserDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Deleting</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

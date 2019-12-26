@@ -1,0 +1,191 @@
+<!-- Developer Name: Maski Saijahnavi-->
+
+<div class="row">
+  <div class="col-md-3 col-lg-2 ml-0 pl-0 pt-0 pr-0 border-right left-menu">
+    <div class="p-2">
+      <h5>
+        ProductOrder<span class="badge badge-secondary float-right">{{productorders.length}}</span>
+      </h5>
+    </div>
+
+    <a class="list-group-item list-group-item-action list-group-item-primary" [routerLink]=" [ '/distributor', 'productorder' ] " [routerLinkActive]="['active']">
+      Place Order
+    </a>
+    <div class="p-2 border-top"><h5>View</h5></div>
+    <div class="px-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="view" [(ngModel)]="viewProductOrderCheckBoxes.OrderID">
+        <label class="form-check-label" for="viewOrderID">
+          OrderID
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewTotalQuantity" [(ngModel)]="viewProductOrderCheckBoxes.TotalQuantity">
+        <label class="form-check-label" for="viewTotalQuantity">
+          TotalQuantity
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewTotalPrice" [(ngModel)]="viewProductOrderCheckBoxes.TotalPrice">
+        <label class="form-check-label" for="viewTotalPrice">
+          TotalPrice
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewCreatedOn" [(ngModel)]="viewProductOrderCheckBoxes.createdOn">
+        <label class="form-check-label" for="viewCreatedOn">
+          Created On
+        </label>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewLastModifiedOn" [(ngModel)]="viewProductOrderCheckBoxes.lastModifiedOn">
+        <label class="form-check-label" for="viewLastModifiedOn">
+          Last Modified On
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1" (click)="onViewSelectAllClick()">Select All</button>
+        <button class="btn btn-secondary btn-sm" (click)="onViewDeselectAllClick()">Deselect All</button>
+      </div>
+    </div>
+    <div class="p-2 border-top mt-4"><h5>Sort by</h5></div>
+    <div class="px-2">
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="sortBy">
+          <option value="id"> Product order ID</option>
+          <option value="totalAmount"> Total Price</option>
+          <option value="totalQuantity">Product OrderQuantity</option>
+          <option value="creationDateTime">Created On</option>
+          <option value="lastModifiedDateTime">Last Modified On</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortAscending" value="ASC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortAscending">
+          Ascending
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortDescending" value="DESC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortDescending">
+          Descending
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1 px-3" (click)="onBtnSortClick()">Sort</button>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-md-9 col-lg-10">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">Distributor</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          <i class="fa fa-circle-o-notch  fa-spin" *ngIf="showProductOrderSpinner"></i>
+        </li>
+      </ol>
+    </nav>
+
+    <!--<h4>ProductOrder </h4>-->
+    <!--<button class="btn btn-primary" data-toggle="modal" data-target="#newProductOrderModal" (click)="onCreateProductOrderClick()">Create Supplier</button>-->
+
+    <table class="table mt-2">
+      <thead>
+        <tr class="table-secondary">
+          <th *ngIf="viewProductOrderCheckBoxes.OrderID">ProductOrderID</th>
+          <th *ngIf="viewProductOrderCheckBoxes.TotalPrice">Total Price</th>
+          <th *ngIf="viewProductOrderCheckBoxes.TotalQuantity">ProductTotalQuantity</th>
+          <th *ngIf="viewProductOrderCheckBoxes.createdOn">Created on</th>
+          <th *ngIf="viewProductOrderCheckBoxes.lastModifiedOn">Last Modified on</th>
+          <th class="text-secondary">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ProductOrder of productorders ; let index = index">
+          <td style="font-size:120%" *ngIf="viewProductOrderCheckBoxes.OrderID">{{ProductOrder.id}}</td>
+          <td *ngIf="viewProductOrderCheckBoxes.TotalPrice">{{ProductOrder.totalAmount}}</td>
+          <td *ngIf="viewProductOrderCheckBoxes.TotalQuantity">{{ProductOrder.totalQuantity}}</td>
+          <td *ngIf="viewProductOrderCheckBoxes.createdOn">{{ProductOrder.creationDateTime}}</td>
+          <td *ngIf="viewProductOrderCheckBoxes.lastModifiedOn">{{ProductOrder.lastModifiedDateTime}}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-secondary" data-toggle="modal" data-target="#ProductOrderDetailModal" (click)="onProductOrderDetailClick(index)">Details</button>
+              <button class="btn btn-danger" data-toggle="modal" data-target="#deleteProductOrderModal" (click)="onDeleteProductOrderClick(index)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<form [formGroup]="deleteProductOrderForm">
+  <div class="modal fade" id="deleteProductOrderModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Delete Order</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 class="mb-4">Are you sure to delete this Order?</h5>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDeleteSupplierCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-danger" (click)="onDeleteProductOrderConfirmClick($event)" [disabled]="deleteSupplierDisabled">
+            <span *ngIf="!deleteSupplierDisabled"><i class="fa fa-save"></i> Delete</span>
+            <span *ngIf="deleteSupplierDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Deleting</span>
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+
+<form [formGroup]="orderDetailForm">
+  <div class="modal fade" id="ProductOrderDetailModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Order Details</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <table class="table mt-2">
+          <thead>
+            <tr class="table-secondary">
+              <th>S.no</th>
+              <th>product Name</th>
+              <th>Total Quantity</th>
+              <th>Unit Price</th>
+              <th>Total Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let ProductOrder of productorderdetails ; let index = index">
+              <td style="font-size:120%">{{ProductOrder.id}}</td>
+              <td>{{ProductOrder. productName }}</td>
+              <td>{{ProductOrder.quantity}}</td>
+              <td>{{ProductOrder.unitPrice}}</td>
+              <td>{{ProductOrder.totalAmount}}</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</form>
+

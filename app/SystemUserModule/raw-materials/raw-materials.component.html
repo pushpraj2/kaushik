@@ -1,0 +1,261 @@
+<div class="row">
+  <div class="col-md-3 col-lg-2 ml-0 pl-0 pt-0 pr-0 border-right left-menu">
+    <div class="p-2">
+      <h5>
+        Raw Materials <span class="badge badge-secondary float-right" *ngIf="rawmaterials.length > 0">{{rawmaterials.length}}</span>
+      </h5>
+    </div>
+    <div class="list-group mb-5">
+      <a class="list-group-item list-group-item-action list-group-item-primary" data-toggle="modal" href="#newRawMaterialModal" (click)="onCreateRawMaterialClick()">Create Raw Material</a>
+    </div>
+    <div class="p-2 border-top"><h5>View</h5></div>
+    <div class="px-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewRawMaterialName" [(ngModel)]="viewRawMaterialCheckBoxes.rawMaterialName">
+        <label class="form-check-label" for="viewRawMaterialName">
+          Raw Material Name
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewRawMaterialCode" [(ngModel)]="viewRawMaterialCheckBoxes.rawMaterialCode">
+        <label class="form-check-label" for="viewRawMaterialCode">
+          Code
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewRawMaterialUnitPrice" [(ngModel)]="viewRawMaterialCheckBoxes.rawMaterialUnitPrice">
+        <label class="form-check-label" for="viewRawMaterialUnitPrice">
+          Price
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewCreatedOn" [(ngModel)]="viewRawMaterialCheckBoxes.createdOn">
+        <label class="form-check-label" for="viewCreatedOn">
+          Created On
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewLastModifiedOn" [(ngModel)]="viewRawMaterialCheckBoxes.lastModifiedOn">
+        <label class="form-check-label" for="viewLastModifiedOn">
+          Last Modified On
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1" (click)="onViewSelectAllClick()">Select All</button>
+        <button class="btn btn-secondary btn-sm" (click)="onViewDeselectAllClick()">Deselect All</button>
+      </div>
+    </div>
+
+    <div class="p-2 border-top mt-4"><h5>Sort by</h5></div>
+    <div class="px-2">
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="sortBy">
+          <option value="rawMaterialName">Raw Material Name</option>
+          <option value="rawMaterialCode">Code</option>
+          <option value="rawMaterialUnitPrice">Price</option>
+          <option value="creationDateTime">Created On</option>
+          <option value="lastModifiedDateTime">Last Modified On</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortAscending" value="ASC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortAscending">
+          Ascending
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortDescending" value="DESC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortDescending">
+          Descending
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1 px-3" (click)="onBtnSortClick()">Sort</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 col-lg-10">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">System User</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Raw Materials
+          <i class="fa fa-circle-o-notch  fa-spin" *ngIf="showRawMaterialsSpinner"></i>
+        </li>
+      </ol>
+    </nav>
+
+    <table class="table mt-2">
+      <thead>
+        <tr class="table-secondary">
+          <th *ngIf="viewRawMaterialCheckBoxes.rawMaterialName">Raw Material Name</th>
+          <th *ngIf="viewRawMaterialCheckBoxes.rawMaterialCode">Code</th>
+          <th *ngIf="viewRawMaterialCheckBoxes.rawMaterialUnitPrice">Price</th>
+          <th *ngIf="viewRawMaterialCheckBoxes.createdOn">Created on</th>
+          <th *ngIf="viewRawMaterialCheckBoxes.lastModifiedOn">Last Modified on</th>
+          <th class="text-secondary">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let rawmaterial of rawmaterials; let index = index">
+          <td style="font-size:110%" *ngIf="viewRawMaterialCheckBoxes.rawMaterialName">{{rawmaterial.rawMaterialName}}</td>
+          <td *ngIf="viewRawMaterialCheckBoxes.rawMaterialCode">{{rawmaterial.rawMaterialCode}}</td>
+          <td *ngIf="viewRawMaterialCheckBoxes.rawMaterialUnitPrice">{{rawmaterial.rawMaterialUnitPrice}}</td>
+          <td *ngIf="viewRawMaterialCheckBoxes.createdOn">{{rawmaterial.creationDateTime}}</td>
+          <td *ngIf="viewRawMaterialCheckBoxes.lastModifiedOn">{{rawmaterial.lastModifiedDateTime}}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-secondary" data-toggle="modal" data-target="#editRawMaterialModal" (click)="onEditRawMaterialClick(index)">Edit</button>
+              <button class="btn btn-danger" data-toggle="modal" data-target="#deleteRawMaterialModal" (click)="onDeleteRawMaterialClick(index)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- New Raw Material Modal -->
+<form [formGroup]="newRawMaterialForm">
+  <div class="modal fade" id="newRawMaterialModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Create Raw Material</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="rawMaterialName" class="col-form-label col-md-4">Raw Material Name: *</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Raw Material Name" class="form-control" id="rawMaterialName" formControlName="rawMaterialName" [ngClass]="getFormControlCssClass(newRawMaterialForm.get('rawMaterialName'), newRawMaterialForm)" />
+              <small class="form-text text-muted">Name of the raw material.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialName', 'required', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialName', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialName', 'minlength', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialName', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialName', 'maxlength', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialName', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="rawMaterialCode" class="col-form-label col-md-4">Raw Material Code: *</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Raw Material Code" class="form-control" id="rawMaterialCode" formControlName="rawMaterialCode" [ngClass]="getFormControlCssClass(newRawMaterialForm.get('rawMaterialCode'), newRawMaterialForm)" />
+              <small class="form-text text-muted">Code of the raw material.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialCode', 'required', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialCode', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialCode', 'minlength', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialCode', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialCode', 'maxlength', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialCode', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="rawMaterialUnitPrice" class="col-form-label col-md-4">Unit Price: *</label>
+            <div class="col-md-8">
+              <input type="number"min="0" placeholder="Price" class="form-control" id="rawMaterialUnitPrice" formControlName="rawMaterialUnitPrice" [ngClass]="getFormControlCssClass(newRawMaterialForm.get('rawMaterialUnitPrice'), newRawMaterialForm)" />
+              <small class="form-text text-muted">Unit Price of raw material | Can't be less than 0.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialUnitPrice', 'required', newRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialUnitPrice', 'required')}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnAddRawMaterialCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onAddRawMaterialClick($event)" [disabled]="newRawMaterialDisabled">
+            <span *ngIf="!newRawMaterialDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="newRawMaterialDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Edit Raw Material Modal -->
+<form [formGroup]="editRawMaterialForm">
+  <div class="modal fade" id="editRawMaterialModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Update Raw Material</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="rawMaterialName" class="col-form-label col-md-4">Raw Material Name:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Raw Material Name" class="form-control" id="rawMaterialName" formControlName="rawMaterialName" [ngClass]="getFormControlCssClass(editRawMaterialForm.get('rawMaterialName'), editRawMaterialForm)" />
+              <small class="form-text text-muted">Name of the raw material.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialName', 'required', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialName', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialName', 'minlength', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialName', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialName', 'maxlength', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialName', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="rawMaterialCode" class="col-form-label col-md-4">Raw Material Code:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Raw Material Code" class="form-control" id="rawMaterialCode" formControlName="rawMaterialCode" [ngClass]="getFormControlCssClass(editRawMaterialForm.get('rawMaterialCode'), editRawMaterialForm)" />
+              <small class="form-text text-muted">Code of the raw material.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialCode', 'required', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialCode', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialCode', 'minlength', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialCode', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialCode', 'maxlength', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialCode', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="rawMaterialUnitPrice" class="col-form-label col-md-4">Unit Price:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Unit Price" class="form-control" id="rawMaterialUnitPrice" formControlName="rawMaterialUnitPrice" [ngClass]="getFormControlCssClass(editRawMaterialForm.get('rawMaterialUnitPrice'), editRawMaterialForm)" />
+              <small class="form-text text-muted">Unit Price of the raw material | Can't be less than 0.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('rawMaterialUnitPrice', 'required', editRawMaterialForm)">{{getFormControlErrorMessage('rawMaterialUnitPrice', 'required')}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnUpdateRawMaterialCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onUpdateRawMaterialClick($event)" [disabled]="editRawMaterialDisabled">
+            <span *ngIf="!editRawMaterialDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="editRawMaterialDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Delete Raw Material Modal -->
+<form [formGroup]="deleteRawMaterialForm">
+  <div class="modal fade" id="deleteRawMaterialModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Delete Raw Material</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 class="mb-4">Are you sure to delete this Raw Material?</h5>
+          <div class="form-group form-row">
+            <label for="rawMaterialName" class="col-form-label col-md-4">Raw Material Name:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Raw Material Name" readonly="readonly" class="form-control-plaintext" id="rawMaterialName" formControlName="rawMaterialName" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDeleteRawMaterialCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-danger" (click)="onDeleteRawMaterialConfirmClick($event)" [disabled]="deleteRawMaterialDisabled">
+            <span *ngIf="!deleteRawMaterialDisabled"><i class="fa fa-save"></i> Delete</span>
+            <span *ngIf="deleteRawMaterialDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Deleting</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>

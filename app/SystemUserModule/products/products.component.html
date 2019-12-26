@@ -1,0 +1,286 @@
+<div class="row">
+  <div class="col-md-3 col-lg-2 ml-0 pl-0 pt-0 pr-0 border-right left-menu">
+    <div class="p-2">
+      <h5>
+        Products <span class="badge badge-secondary float-right" *ngIf="products.length > 0">{{products.length}}</span>
+      </h5>
+    </div>
+    <div class="list-group mb-5">
+      <a class="list-group-item list-group-item-action list-group-item-primary" data-toggle="modal" href="#newProductModal" (click)="onCreateProductClick()">Create Product</a>
+    </div>
+    <div class="p-2 border-top"><h5>View</h5></div>
+    <div class="px-2">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewProductName" [(ngModel)]="viewProductCheckBoxes.productName">
+        <label class="form-check-label" for="viewProductName">
+          Product Name
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewProductCode" [(ngModel)]="viewProductCheckBoxes.productCode">
+        <label class="form-check-label" for="viewProductCode">
+          Code
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewProductType" [(ngModel)]="viewProductCheckBoxes.productType">
+        <label class="form-check-label" for="viewProductType">
+          Product Type
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewProductUnitPrice" [(ngModel)]="viewProductCheckBoxes.productUnitPrice">
+        <label class="form-check-label" for="viewProductUnitPrice">
+          Price
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewCreatedOn" [(ngModel)]="viewProductCheckBoxes.createdOn">
+        <label class="form-check-label" for="viewCreatedOn">
+          Created On
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="viewLastModifiedOn" [(ngModel)]="viewProductCheckBoxes.lastModifiedOn">
+        <label class="form-check-label" for="viewLastModifiedOn">
+          Last Modified On
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1" (click)="onViewSelectAllClick()">Select All</button>
+        <button class="btn btn-secondary btn-sm" (click)="onViewDeselectAllClick()">Deselect All</button>
+      </div>
+    </div>
+
+    <div class="p-2 border-top mt-4"><h5>Sort by</h5></div>
+    <div class="px-2">
+      <div class="form-group">
+        <select class="form-control" [(ngModel)]="sortBy">
+          <option value="productName">Product Name</option>
+          <option value="productCode">Code</option>
+          <option value="productType">Type</option>
+          <option value="productUnitPrice">Price</option>
+          <option value="creationDateTime">Created On</option>
+          <option value="lastModifiedDateTime">Last Modified On</option>
+        </select>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortAscending" value="ASC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortAscending">
+          Ascending
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="radio" id="sortDescending" value="DESC" [(ngModel)]="sortDirection">
+        <label class="form-check-label" for="sortDescending">
+          Descending
+        </label>
+      </div>
+      <div class="form-group my-2">
+        <button class="btn btn-secondary btn-sm mr-1 px-3" (click)="onBtnSortClick()">Sort</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-9 col-lg-10">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="#">System User</a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+          Products
+          <i class="fa fa-circle-o-notch  fa-spin" *ngIf="showProductsSpinner"></i>
+        </li>
+      </ol>
+    </nav>
+
+    <table class="table mt-2">
+      <thead>
+        <tr class="table-secondary">
+          <th *ngIf="viewProductCheckBoxes.productName">Product Name</th>
+          <th *ngIf="viewProductCheckBoxes.productCode">Code</th>
+          <th *ngIf="viewProductCheckBoxes.productType">Type</th>
+          <th *ngIf="viewProductCheckBoxes.productUnitPrice">Price</th>
+          <th *ngIf="viewProductCheckBoxes.createdOn">Created on</th>
+          <th *ngIf="viewProductCheckBoxes.lastModifiedOn">Last Modified on</th>
+          <th class="text-secondary">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let product of products; let index = index">
+          <td style="font-size:110%" *ngIf="viewProductCheckBoxes.productName">{{product.productName}}</td>
+          <td *ngIf="viewProductCheckBoxes.productCode">{{product.productCode}}</td>
+          <td *ngIf="viewProductCheckBoxes.productType">{{product.productType}}</td>
+          <td *ngIf="viewProductCheckBoxes.productUnitPrice">{{product.productUnitPrice}}</td>
+          <td *ngIf="viewProductCheckBoxes.createdOn">{{product.creationDateTime}}</td>
+          <td *ngIf="viewProductCheckBoxes.lastModifiedOn">{{product.lastModifiedDateTime}}</td>
+          <td>
+            <div class="btn-group">
+              <button class="btn btn-secondary" data-toggle="modal" data-target="#editProductModal" (click)="onEditProductClick(index)">Edit</button>
+              <button class="btn btn-danger" data-toggle="modal" data-target="#deleteProductModal" (click)="onDeleteProductClick(index)">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+<!-- New Product Modal -->
+<form [formGroup]="newProductForm">
+  <div class="modal fade" id="newProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Create Product</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="productName" class="col-form-label col-md-4">Product Name: *</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Product Name" class="form-control" id="productName" formControlName="productName" [ngClass]="getFormControlCssClass(newProductForm.get('productName'), newProductForm)" />
+              <small class="form-text text-muted">Name of the product.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productName', 'required', newProductForm)">{{getFormControlErrorMessage('productName', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productName', 'minlength', newProductForm)">{{getFormControlErrorMessage('productName', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productName', 'maxlength', newProductForm)">{{getFormControlErrorMessage('productName', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="productCode" class="col-form-label col-md-4">Product Code: *</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Product Code" class="form-control" id="productCode" formControlName="productCode" [ngClass]="getFormControlCssClass(newProductForm.get('productCode'), newProductForm)" />
+              <small class="form-text text-muted">Code of the product.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productCode', 'required', newProductForm)">{{getFormControlErrorMessage('productCode', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productCode', 'minlength', newProductForm)">{{getFormControlErrorMessage('productCode', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productCode', 'maxlength', newProductForm)">{{getFormControlErrorMessage('productCode', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="productType" class="col-form-label col-md-4">Product Type: *</label>
+            <div class="col-md-8">
+              <select class="form-control" style="width:100%" id="productType" formControlName="productType" [ngClass]="getFormControlCssClass(newProductForm.get('productType'), newProductForm)">
+                <option value="Juice">Juice </option>
+                <option value="Soft Drink">Soft Drink</option>
+                <option value="Mocktail">Mocktail</option>
+                <option value="Energy Drink">Energy Drink</option>
+                <option value="Tonic Water">Tonic Water</option>
+              </select>
+              <small class="form-text text-muted">Type of the product.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productType', 'required', newProductForm)">{{getFormControlErrorMessage('productType', 'required')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="productUnitPrice" class="col-form-label col-md-4">Unit Price: *</label>
+            <div class="col-md-8">
+              <input type="number" min="0" placeholder="Price" class="form-control" id="productUnitPrice" formControlName="productUnitPrice" [ngClass]="getFormControlCssClass(newProductForm.get('productUnitPrice'), newProductForm)" />
+              <small class="form-text text-muted">Unit Price of product | Can't be less than 0.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productUnitPrice', 'required', newProductForm)">{{getFormControlErrorMessage('productUnitPrice', 'required')}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnAddProductCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onAddProductClick($event)" [disabled]="newProductDisabled">
+            <span *ngIf="!newProductDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="newProductDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<!-- Edit Product Modal -->
+<form [formGroup]="editProductForm">
+  <div class="modal fade" id="editProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Update Product</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="form-group form-row">
+            <label for="productName" class="col-form-label col-md-4">Product Name:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Product Name" class="form-control" id="productName" formControlName="productName" [ngClass]="getFormControlCssClass(editProductForm.get('productName'), editProductForm)" />
+              <small class="form-text text-muted">Name of the product.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productName', 'required', editProductForm)">{{getFormControlErrorMessage('productName', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productName', 'minlength', editProductForm)">{{getFormControlErrorMessage('productName', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productName', 'maxlength', editProductForm)">{{getFormControlErrorMessage('productName', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="productCode" class="col-form-label col-md-4">Product Code:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Product Code" class="form-control" id="productCode" formControlName="productCode" [ngClass]="getFormControlCssClass(editProductForm.get('productCode'), editProductForm)" />
+              <small class="form-text text-muted">Code of the product.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productCode', 'required', editProductForm)">{{getFormControlErrorMessage('productCode', 'required')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productCode', 'minlength', editProductForm)">{{getFormControlErrorMessage('productCode', 'minlength')}}</span>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productCode', 'maxlength', editProductForm)">{{getFormControlErrorMessage('productCode', 'maxlength')}}</span>
+            </div>
+          </div>
+          <div class="form-group form-row">
+            <label for="productUnitPrice" class="col-form-label col-md-4">Unit Price:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Unit Price" class="form-control" id="productUnitPrice" formControlName="productUnitPrice" [ngClass]="getFormControlCssClass(editProductForm.get('productUnitPrice'), editProductForm)" />
+              <small class="form-text text-muted">Unit Price of the product | Can't be less than 0.</small>
+              <span class="text-danger" *ngIf="getCanShowFormControlErrorMessage('productUnitPrice', 'required', editProductForm)">{{getFormControlErrorMessage('productUnitPrice', 'required')}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnUpdateProductCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-success" (click)="onUpdateProductClick($event)" [disabled]="editProductDisabled">
+            <span *ngIf="!editProductDisabled"><i class="fa fa-save"></i> Save</span>
+            <span *ngIf="editProductDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Saving</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+
+<!-- Delete Product Modal -->
+<form [formGroup]="deleteProductForm">
+  <div class="modal fade" id="deleteProductModal" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header bg-info text-white">
+          <h5 class="modal-title">Delete Product</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 class="mb-4">Are you sure to delete this Product?</h5>
+          <div class="form-group form-row">
+            <label for="productName" class="col-form-label col-md-4">Product Name:</label>
+            <div class="col-md-8">
+              <input type="text" placeholder="Product Name" readonly="readonly" class="form-control-plaintext" id="productName" formControlName="productName" />
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnDeleteProductCancel">
+            <i class="fa fa-times-circle"></i> Cancel
+          </button>
+          <button type="submit" class="btn btn-danger" (click)="onDeleteProductConfirmClick($event)" [disabled]="deleteProductDisabled">
+            <span *ngIf="!deleteProductDisabled"><i class="fa fa-save"></i> Delete</span>
+            <span *ngIf="deleteProductDisabled"><i class="fa fa-circle-o-notch  fa-spin"></i> Deleting</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
